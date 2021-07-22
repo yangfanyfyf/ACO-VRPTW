@@ -16,15 +16,15 @@ function j=next_point(k,Table,Tau,Eta,alpha,beta,gama,delta,r,r0,a,b,width,s,L,d
   unVisit = setxor(route_k,allSet);                             %找出蚂蚁k未服务的顾客集合
   uvNum=length(unVisit);                                      %找出蚂蚁k未服务的顾客数目
   [VC,NV,TD] = decode(route_k,cap,demands,a,b,L,s,dist);        %蚂蚁k目前为止所构建出的所有路径
-  %如果当前路径配送方案为空
-  if ~isempty(VC)
-      route=VC{end,1};                                            %蚂蚁k当前正在构建的路径
+  %如果当前路径配送方案不为空
+  if ~isempty(VC) % route exist
+      route = VC{end,1};                                            %蚂蚁k当前正在构建的路径
   else
-      %如果当前路径配送方案不为空
-      route=[];
+      %如果当前路径配送方案为空
+      route = [];
   end
-  lr=length(route);                                           %蚂蚁k当前正在构建的路径所访问顾客数目
-  preroute=zeros(1,lr+1);                                     %临时变量，储存蚂蚁k当前正在构建的路径添加下一个点后的路径
+  lr=length(route);                                           % numbers os cuntomers for ant K
+  preroute=zeros(1,lr+1);                                     % 临时变量，储存蚂蚁k当前正在构建的路径添加下一个点后的路径
   preroute(1:lr)=route;
   Nik=next_point_set(k,Table,cap,demands,a,b,L,s,dist);       %找到蚂蚁k从i点出发可以移动到的下一个点j的集合，j点必须是满足容量及时间约束且是未被蚂蚁k服务过的顾客
   
