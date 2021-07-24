@@ -1,4 +1,3 @@
-
 clear; clc; close all;
 %% input 
 c101 = importdata('c101.txt');
@@ -38,7 +37,7 @@ while iter<=iter_max
         %逐个顾客选择
         for j=1:customer_number
             r=rand;                                             %r为在[0,1]上的随机变量
-            np=next_point(i,Table,Tau,Eta,alpha,beta,gama,delta,r,r0,time_window1,time_window2,width,service_time,depot_time_window2,dist);
+            np=next_point_temp(i,Table,Tau,Eta,alpha,beta,gama,delta,r,r0,time_window1,time_window2,width,service_time,depot_time_window2,dist);
             Table(i,j)=np;
         end
     end
