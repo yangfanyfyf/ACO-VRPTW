@@ -5,7 +5,7 @@
 % rho, the pheromone evaporation rate, it should be (1 - rho)
 % Q, a constant
 
-function Tau = updateTau(Tau, bestR, rho, Q, a, b, L, s, dist)
+function Tau = UpdateTau(Tau, bestR, rho, Q, a, b, L, s, dist)
     [~, ~, bestTD] = decode(bestR, a, b, L, s, dist);
     cusnum = size(dist,1) - 1;
     delta_tau_matrix = zeros(cusnum + 1, cusnum + 1);

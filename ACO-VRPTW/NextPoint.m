@@ -1,6 +1,6 @@
 % find the next point for the ants
 
-function point_j =  next_point_temp(k, Table, Tau, Eta, alpha, beta, gamma, delta, r, r0, a, b, width, s, L, dist)
+function point_j =  NextPoint(k, Table, Tau, Eta, alpha, beta, gamma, delta, r, r0, a, b, width, s, L, dist)
   route_k = Table(k, :);
   % find the last point i in route k
   point_i = route_k(find(route_k ~= 0, 1, 'last'));
@@ -23,7 +23,7 @@ function point_j =  next_point_temp(k, Table, Tau, Eta, alpha, beta, gamma, delt
   preroute = zeros(1, lr + 1);
   preroute(1:lr) = route;
   % find the possible next point, must fullfill the time window constraints
-  Nik = next_point_set(k, Table, a, b, L, s, dist);
+  Nik = NextPointSet(k, Table, a, b, L, s, dist);
 
   % situation 1
   % calculate p_value for every possble point, choose the point with the maximum p_value
@@ -35,7 +35,7 @@ function point_j =  next_point_temp(k, Table, Tau, Eta, alpha, beta, gamma, delt
         % for every possible route
         point_j = Nik(h);
         preroute(end) = point_j;
-        [~, ~, wait, ~] = begin_s(preroute, a, s, dist);
+        [~, ~, wait, ~] = BeginService(preroute, a, s, dist);
         if wait(end) == 0
           wait(end) = 1e-8;
         end
@@ -52,7 +52,7 @@ function point_j =  next_point_temp(k, Table, Tau, Eta, alpha, beta, gamma, delt
       for h = 1 : uvNum
         point_j = unVisit(h);
         preroute(end) = point_j;
-        [~, ~, wait, ~] = begin_s(preroute, a, s, dist);
+        [~, ~, wait, ~] = BeginService(preroute, a, s, dist);
         if wait(end) == 0
           wait(end) = 1e-8;
         end
@@ -73,7 +73,7 @@ function point_j =  next_point_temp(k, Table, Tau, Eta, alpha, beta, gamma, delt
       for h = 1 : Nik_num
         point_j = Nik(h);
         preroute(end) = point_j;
-        [~, ~, wait, ~] = begin_s(preroute, a, s, dist);
+        [~, ~, wait, ~] = BeginService(preroute, a, s, dist);
         if wait(end) == 0
           wait(end) = 1e-8;
         end
@@ -82,14 +82,14 @@ function point_j =  next_point_temp(k, Table, Tau, Eta, alpha, beta, gamma, delt
                         ((1/width(point_j))^gamma) * ...
                         ((1/wait(end))^delta);
       end
-      index = roulette(p_value);
+      index = Roulette(p_value);
       point_j = Nik(index);
     else
       p_value = zeros(uvNum, 1);
       for h = 1 : uvNum
         point_j = unVisit(h);
         preroute(end) = point_j;
-        [~, ~, wait, ~] = begin_s(preroute, a, s, dist);
+        [~, ~, wait, ~] = BeginService(preroute, a, s, dist);
         if wait(end) == 0
           wait(end) = 1e-8;
         end
@@ -98,7 +98,7 @@ function point_j =  next_point_temp(k, Table, Tau, Eta, alpha, beta, gamma, delt
                         ((1/width(point_j))^gamma) * ...
                         ((1/wait(end))^delta);
       end
-      index = roulette(p_value);
+      index = Roulette(p_value);
       point_j = unVisit(index);
     end
 end

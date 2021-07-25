@@ -3,7 +3,7 @@
 % bs, begin service time
 % wait, time to wait
 % back, time back to depot
-function [arr,bs,wait,back] = begin_s(route,a,s,dist)
+function [arr,bs,wait,back] = BeginService(route,a,s,dist)
   n = length(route); 
   arr = zeros(1,n); 
   bs = zeros(1,n); 
