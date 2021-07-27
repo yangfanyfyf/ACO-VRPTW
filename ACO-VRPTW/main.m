@@ -30,14 +30,12 @@ Tau = ones(customer_number+1,customer_number+1);                  % a matrix to 
 Table = zeros(ant_number,customer_number);                        % a matrix to save the route
 Route_best = zeros(iter_max,customer_number);                     % the best route
 Cost_best = zeros(iter_max,1);                                    % the cost of best route
-%% 迭代寻找最佳路径
+%% find the best route 
 while iter <= iter_max
-    %% 先构建出所有蚂蚁的路径
-    %逐个蚂蚁选择
+    % ConstructAntSolutions
     for i = 1:ant_number
-        %逐个顾客选择
         for j = 1:customer_number
-            r = rand;                                             %r为在[0,1]上的随机变量
+            r = rand;
             np = NextPoint(i,Table,Tau,Eta,alpha,beta,gamma,delta,r,r0,time_window1,time_window2,width,service_time,depot_time_window2,dist);
             Table(i,j) = np;
         end
@@ -69,24 +67,23 @@ while iter <= iter_max
     bestR = Route_best(iter,:); % find out the best route
     [bestVC,bestNV,bestTD] = decode(bestR,time_window1,time_window2,depot_time_window2,service_time,dist); 
     Tau = UpdateTau(Tau,bestR,rho,Q,time_window1,time_window2,depot_time_window2,service_time,dist);
-    %% 打印当前最优解
-    disp(['第',num2str(iter),'代最优解:'])
-    disp(['车辆使用数目：',num2str(bestNV),'，车辆行驶总距离：',num2str(bestTD)]);
+    %% print 
+    disp(['Iterration: ',num2str(iter)])
+    disp(['Number of Robots: ',num2str(bestNV),', Total Distance: ',num2str(bestTD)]);
     fprintf('\n')
-    %% 迭代次数加1，清空路径记录表
+    %
     iter = iter+1;
     Table = zeros(ant_number,customer_number);
 end
-%% 结果显示
+%% draw
 bestRoute=Route_best(end,:);
 [bestVC,NV,TD]=decode(bestRoute,time_window1,time_window2,depot_time_window2,service_time,dist);
 draw_Best(bestVC,vertexs);
-%% 绘图
 figure(2)
 plot(1:iter_max,Cost_best,'b')
-xlabel('迭代次数')
-ylabel('成本')
-title('各代最小成本变化趋势图')
+xlabel('Iteration')
+ylabel('Cost')
+title('Change of Cost')
 %% check the constraints, 1 == no violation
 flag = Check(bestVC,time_window1,time_window2,depot_time_window2,service_time,dist)
 

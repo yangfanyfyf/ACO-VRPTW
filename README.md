@@ -3,7 +3,7 @@
 ```matlab
 Procedure ACO
 	Initialization
-	while(termination condition not meet):
+	while(termination conditions not meet):
 		ConstructAntSolutions
 		ApplyLocalSearch %optional
 		UpdatePheromone
@@ -15,7 +15,7 @@ end
 
 Set all parameters
 
-### ConstructAntSolutions:
+### ConstructAntSolutions
 
 Each ant starts with an initially empty solution and the current partial solution will be extended by choosing one feasible solution component with the following rules:
 
@@ -28,7 +28,7 @@ Each ant starts with an initially empty solution and the current partial solutio
 $$
 j = 
 	\begin{cases}
-		\max_{j \in N_i^k} \lbrace [\tau_{ij}]^\alpha [\eta_{ij}]^\beta [1/width_j]^\gamma [1/wait_j]^\delta \rbrace & \text{$r\leq r_0$} \\[2ex]
+		arg\ max_{j \in N_i^k} \lbrace [\tau_{ij}]^\alpha [\eta_{ij}]^\beta [1/width_j]^\gamma [1/wait_j]^\delta \rbrace & \text{$r\leq r_0$} \\[2ex]
 		P_{ij}^k = \frac
 		{[\tau_{ij}]^\alpha [\eta_{ij}]^\beta [1/width_j]^\gamma [1/wait_j]^\delta}
 		{\sum_{l\in N_i^k}[\tau_{il}]^\alpha [\eta_{il}]^\beta [1/width_l]^\gamma [1/wait_l]^\delta} & \text{$r > r_0$}
@@ -47,7 +47,7 @@ $r_0$ , a constant
 
 ### UpdatePheromone
 
-Only update the pheromone on the edge of the best route
+Only update the pheromone on the edge with the best route
 $$
 \tau_{ij}^{new} = \rho * \tau_{ij}^{old} + \Delta \tau_{ij}\\
 \Delta \tau_{ij} = \frac {Q}{TD}
@@ -55,3 +55,4 @@ $$
 $Q$​ , a constant
 
 $TD$ , the total distance
+
