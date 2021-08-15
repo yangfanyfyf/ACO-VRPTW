@@ -1,22 +1,31 @@
 clear; clc; close all;
+tic
 %% input 
 c101 = importdata('c101.txt');
-depot_time_window1 = c101(1,5); % time window of depot
-depot_time_window2 = c101(1,6);
+% c101 = importdata('my_test_data.xlsx');
+% depot_time_window1 = c101(1,5); % time window of depot
+% depot_time_window2 = c101(1,6);
+
+depot_time_window1 = TimeTrans(c101(1,5)); % time window of depot
+depot_time_window2 = TimeTrans(c101(1,6));
 vertexs = c101(:,2:3); 
 customer = vertexs(2:end,:); % customer locations
 customer_number = size(customer,1);
 % vehicle_number = 25;
-time_window1 = c101(2:end,5);
-time_window2 = c101(2:end,6);
+% time_window1 = c101(2:end,5);
+% time_window2 = c101(2:end,6);
+
+time_window1 = TimeTrans(c101(2:end,5));
+time_window2 = TimeTrans(c101(2:end,6));
+
 width = time_window2-time_window1; % width of time window
 service_time = c101(2:end,7); 
 h = pdist(vertexs);
 dist = squareform(h); % distance matrix
 %% initialize the parameters
-ant_number = 15;                                                  % number of ants
-alpha = 1;                                                        % parameter for pheromone
-beta = 3;                                                         % paremeter for heuristic information
+ant_number = floor(customer_number * 1.5);                                                  % number of ants
+alpha = 4;                                                        % parameter for pheromone
+beta = 5;                                                         % paremeter for heuristic information
 gamma = 2;                                                        % parameter for waiting time
 delta = 3;                                                        % parameter for width of time window
 r0 = 0.5;                                                         % a constant to control the movement of ants
@@ -24,14 +33,24 @@ rho = 0.85;                                                       % pheromone ev
 Q = 5;                                                            % a constant to influence the update of pheromene
 Eta = 1./dist;                                                    % heuristic function
 iter = 1;                                                         % initial iteration number
-iter_max = 50;                                                    % maximum iteration number
+iter_max = 200;                                                    % maximum iteration number
 
 Tau = ones(customer_number+1,customer_number+1);                  % a matrix to store pheromone
 Table = zeros(ant_number,customer_number);                        % a matrix to save the route
 Route_best = zeros(iter_max,customer_number);                     % the best route
 Cost_best = zeros(iter_max,1);                                    % the cost of best route
+
+
+
+iter_time = [];
+last_dist = 0;
+stop_count = 0;
+
+
+
 %% find the best route 
 while iter <= iter_max
+    %tic;
     % ConstructAntSolutions
     for i = 1:ant_number
         for j = 1:customer_number
@@ -67,6 +86,7 @@ while iter <= iter_max
     bestR = Route_best(iter,:); % find out the best route
     [bestVC,bestNV,bestTD] = decode(bestR,time_window1,time_window2,depot_time_window2,service_time,dist); 
     Tau = UpdateTau(Tau,bestR,rho,Q,time_window1,time_window2,depot_time_window2,service_time,dist);
+
     %% print 
     disp(['Iterration: ',num2str(iter)])
     disp(['Number of Robots: ',num2str(bestNV),', Total Distance: ',num2str(bestTD)]);
@@ -74,9 +94,22 @@ while iter <= iter_max
     %
     iter = iter+1;
     Table = zeros(ant_number,customer_number);
+    
+    %iter_time(iter) = toc;
+    
+%     if last_dist == bestTD
+%         stop_count = stop_count + 1;
+%         if stop_count > 30
+%             break;
+%         end
+%     else
+%         last_dist = bestTD;
+%         stop_count = 0;
+%     end
+    
 end
 %% draw
-bestRoute=Route_best(end,:);
+bestRoute=Route_best(iter-1,:);
 [bestVC,NV,TD]=decode(bestRoute,time_window1,time_window2,depot_time_window2,service_time,dist);
 draw_Best(bestVC,vertexs);
 figure(2)
@@ -87,7 +120,7 @@ title('Change of Cost')
 %% check the constraints, 1 == no violation
 flag = Check(bestVC,time_window1,time_window2,depot_time_window2,service_time,dist)
 
-
+toc
 
 
 
